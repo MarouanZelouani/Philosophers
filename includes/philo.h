@@ -12,6 +12,7 @@
 #define TIME_TO_SLEEP 210
 #define TIME_TO_DIE 200
 #define NUMBER_OF_PHILOS 4
+#define MAX_MEALS 3
 
 
 typedef struct s_param
