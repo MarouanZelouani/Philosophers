@@ -7,6 +7,7 @@
 #include <pthread.h>
 #include <sys/time.h>
 #include <time.h>
+#include <stdbool.h>
 
 #define TIME_TO_EAT 200
 #define TIME_TO_SLEEP 210
@@ -14,6 +15,13 @@
 #define NUMBER_OF_PHILOS 4
 #define MAX_MEALS 3
 
+enum status 
+{
+    EATING,
+    SLEEPING,
+    THINKING,
+    DEAD
+};
 
 typedef struct s_param
 {
@@ -24,6 +32,8 @@ typedef struct s_param
     int number_of_meals;
     int threads_ready;
     long start_time;
+    bool launch;
+    pthread_mutex_t launch_lock;
     pthread_mutex_t threads_ready_lock;
     pthread_mutex_t write_lock;
 } t_param;
@@ -43,7 +53,15 @@ typedef struct s_philosopher
     t_fork *right_fork;
     int number_of_meals;
     long last_meal_time;
+    enum status status;
     t_param *param;
 } t_philosopher;
+
+typedef struct s_supervisor
+{
+    pthread_t thread;
+    t_param *param;
+    t_philosopher *philos;
+} t_supervisor;
 
 #endif
