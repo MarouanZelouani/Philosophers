@@ -8,6 +8,17 @@ long get_time(void)
 	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
 }
 
+
+void	ft_usleep(long time_to_sleep)
+{
+	long	start_time;
+
+	start_time = get_time();
+	while (get_time() - start_time < time_to_sleep)
+		usleep(time_to_sleep / 10);
+}
+
+
 void write_state(char *s, t_philosopher *philo)
 {
     pthread_mutex_lock(&philo->param->write_lock);
@@ -15,13 +26,28 @@ void write_state(char *s, t_philosopher *philo)
     pthread_mutex_unlock(&philo->param->write_lock);
 }
 
-void  *sep_routine (void *data)
+void  *check_for_death(void *data)
 {
     t_supervisor *s;
-    
-    s = (t_supervisor *)data;
-    // CHECK IF A PHILOSOPHER IS DEAD
+    int i;
 
+    s = (t_supervisor *)data;
+    t_philosopher **philos = (t_philosopher **)s->philos;
+    // CHECK IF A PHILOSOPHER IS DEAD
+    while (1)
+    {
+        i = 0;
+        while(philos[i])
+        {
+            if (philos[i]->status == THINKING
+            && get_time() - philos[i]->last_meal_time >= TIME_TO_DIE
+            && philos[i]->last_meal_time != EATING)
+            {
+                
+            }
+            i++;
+        }
+    }
     return (NULL);
 }
 
@@ -33,7 +59,7 @@ void *routine (void *data)
     
     
     // WAIT FOR ALL THE THREAD TO BE GREATED
-    while (philo->param->threads_ready == 0){}
+    //while (philo->param->threads_ready == 0){}
     
     // THE START OF THE EXPERIMENT
     if (philo->param->launch == false)
@@ -44,6 +70,9 @@ void *routine (void *data)
         philo->param->launch = true;
         pthread_mutex_unlock(&philo->param->launch_lock);
     }
+
+    if (philo->id % 2 != 0)
+        ft_usleep(TIME_TO_EAT);
     
     while (1)
     {   
@@ -55,7 +84,8 @@ void *routine (void *data)
         write_state("has taking a fork", philo);
         philo->right_fork->is_availble = 1;
         write_state("is eating", philo);
-        usleep(TIME_TO_EAT);
+        philo->status = EATING; // change the status
+        ft_usleep(TIME_TO_EAT);
         philo->number_of_meals++;
         philo->last_meal_time = get_time();
 
@@ -67,12 +97,14 @@ void *routine (void *data)
 
         //  SLEEPING
         write_state("is sleeping", philo);
-        usleep(TIME_TO_SLEEP);
+        philo->status = SLEEPING;
+        ft_usleep(TIME_TO_SLEEP);
 
         // THINKING
+        philo->status = THINKING;
         write_state("is thinking", philo);
-        if (philo->number_of_meals == MAX_MEALS)
-            break;
+        // if (philo->number_of_meals == MAX_MEALS)
+        //     break;
     }
     return (NULL);
 }
@@ -114,6 +146,7 @@ int main (int ac, char **av)
     {
         philos[i].id = i + 1;
         philos[i].number_of_meals = 0;
+        philos[i].status = STARTING;
         // ASSIGN FORKS
         philos[i].right_fork = &forks[i];
         philos[i].left_fork = &forks[(i + 1) % NUMBER_OF_PHILOS];
@@ -123,8 +156,8 @@ int main (int ac, char **av)
 
     // INIT SUPERVISOR
     supervisor.param = &param;
-    supervisor.philos = philos;
-    pthread_create(&supervisor.thread, NULL, &sep_routine, &supervisor);
+    supervisor.philos = &philos;
+    pthread_create(&supervisor.thread, NULL, &check_for_death, &supervisor);
 
     // START SIMULATION
         // CHECK IF THE NUMBER_OF_MEALS IF SET TO 0 !!
@@ -146,5 +179,5 @@ int main (int ac, char **av)
         pthread_join(philos[i].thread, NULL);
         i++;
     }
-    //pthread_join(supervisor.thread, NULL);
+    pthread_join(supervisor.thread, NULL);
 }

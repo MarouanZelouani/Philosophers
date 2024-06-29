@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <sys/time.h>
+#include <sys/types.h>
 #include <time.h>
 #include <stdbool.h>
 
@@ -17,6 +18,7 @@
 
 enum status 
 {
+    STARTING,
     EATING,
     SLEEPING,
     THINKING,
