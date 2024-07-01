@@ -10,11 +10,11 @@
 #include <time.h>
 #include <stdbool.h>
 
-#define NUMBER_OF_PHILOS 4
-#define TIME_TO_DIE 310
+#define NUMBER_OF_PHILOS 5
+#define TIME_TO_DIE 210
 #define TIME_TO_EAT 200
 #define TIME_TO_SLEEP 100
-#define MAX_MEALS 2
+#define MAX_MEALS -1
 
 enum status 
 {
@@ -72,7 +72,7 @@ typedef struct s_supervisor
 {
     pthread_t thread;
     t_param *param;
-    t_philosopher **philos;
+    t_philosopher *philos;
 } t_supervisor;
 
 #endif
