@@ -11,7 +11,8 @@ long get_time(void)
 void change_status(t_philosopher *philo, enum status status)
 {
     pthread_mutex_lock(&philo->status_lock);
-    philo->status = status;
+    if (philo->status != DIED)
+        philo->status = status;
     pthread_mutex_unlock(&philo->status_lock);
 }
 
@@ -25,12 +26,6 @@ void	ft_usleep(long time_to_sleep)
 }
 
 
-void write_state(char *s, t_philosopher *philo)
-{
-    pthread_mutex_lock(&philo->param->write_lock);
-    printf("%lu %d %s\n", get_time() - philo->param->start_time, philo->id, s);
-    pthread_mutex_unlock(&philo->param->write_lock);
-}
 
 enum status get_status(t_philosopher *philo)
 {
@@ -61,7 +56,8 @@ bool is_philo_dead(t_philosopher *philo)
 
     is_dead = false;
     pthread_mutex_lock(&philo->lock);
-    if (get_time() - philo->last_meal_time >= TIME_TO_DIE)
+    if (get_time() - philo->last_meal_time >= TIME_TO_DIE 
+    && philo->status == THINKING)
         is_dead = true;
     pthread_mutex_unlock(&philo->lock);
     return (is_dead);
@@ -91,6 +87,15 @@ bool dinner_end(t_philosopher *philos)
     if(n >= NUMBER_OF_PHILOS || is_dead(&philos[0]))
         return (true);
     return (false);
+}
+
+void write_state(char *s, t_philosopher *philo)
+{
+    pthread_mutex_lock(&philo->param->write_lock);
+    // if (!(get_status(philo) == DIED || is_philo_dead(philo) == true))
+    //     trye
+    printf("%lu %d %s\n", get_time() - philo->param->start_time, philo->id, s);
+    pthread_mutex_unlock(&philo->param->write_lock);
 }
 
 // CHECK IF A PHILOSOPHER DIED
@@ -130,6 +135,7 @@ void  *check_for_death(void *data)
             if (get_status(&s->philos[i]) == THINKING
             && is_philo_dead(&s->philos[i]) == true)
             {
+                change_status(&s->philos[i], DIED);
                 write_state("died", &s->philos[i]);
                 pthread_mutex_lock(&s->param->is_dead_lock);
                 s->param->is_dead = true;
@@ -140,6 +146,27 @@ void  *check_for_death(void *data)
     }
     // printf("supervisor finish\n");
     return (NULL);
+}
+
+int take_forks(t_philosopher *philo)
+{
+    if (philo->id % 2 == 0 && is_philo_dead(philo) == false)
+    {
+        pthread_mutex_lock(&philo->left_fork->lock);
+        write_state("has taking a fork", philo);
+        pthread_mutex_lock(&philo->right_fork->lock);
+        write_state("has taking a fork", philo);
+        return (EXIT_SUCCESS);
+    }
+    else if (philo->id % 2 != 0 && is_philo_dead(philo) == false)
+    {
+        pthread_mutex_lock(&philo->right_fork->lock);
+        write_state("has taking a fork", philo);
+        pthread_mutex_lock(&philo->left_fork->lock);
+        write_state("has taking a fork", philo);
+        return (EXIT_SUCCESS);
+    }
+    return (EXIT_SUCCESS);
 }
 
 void *routine (void *data)
@@ -162,18 +189,20 @@ void *routine (void *data)
     //     philo->param->launch = true;
     //     pthread_mutex_unlock(&philo->param->launch_lock);
     // }
-
     if (philo->id % 2 != 0)
         ft_usleep(TIME_TO_EAT);
     while (!dead && is_dead(philo) == false)
     {   
         // EATING
-        pthread_mutex_lock(&philo->left_fork->lock);
-        write_state("has taking a fork", philo);
-        philo->left_fork->is_availble = 0;
-        pthread_mutex_lock(&philo->right_fork->lock);
-        write_state("has taking a fork", philo);
-        philo->right_fork->is_availble = 1;
+        // pthread_mutex_lock(&philo->left_fork->lock);
+        // write_state("has taking a fork", philo);
+        // philo->left_fork->is_availble = 0;
+        // pthread_mutex_lock(&philo->right_fork->lock);
+        // // if (get_status(philo) == DIED)
+        // //     break;
+        // write_state("has taking a fork", philo);
+        // philo->right_fork->is_availble = 1;
+        take_forks(philo);
         change_status(philo, EATING); // change the status
         write_state("is eating", philo);
         ft_usleep(TIME_TO_EAT);

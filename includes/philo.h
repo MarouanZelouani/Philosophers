@@ -19,6 +19,7 @@
 enum status 
 {
     STARTING,
+    TAKINGFORK,
     EATING,
     SLEEPING,
     THINKING,
