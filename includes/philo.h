@@ -60,6 +60,7 @@ typedef struct s_philosopher
     t_fork *left_fork;
     t_fork *right_fork;
     bool full;
+    bool last_msg;
     int number_of_meals;
     long last_meal_time;
     enum status status;

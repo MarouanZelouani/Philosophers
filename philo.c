@@ -89,12 +89,22 @@ bool dinner_end(t_philosopher *philos)
     return (false);
 }
 
+int ft_strcmp(char *s1, char *s2)
+{
+    int i = 0;
+    while (s1[i] || s2[i])
+    {
+        if (s1[i] - s2[i] != 0)
+            return (s1[i] - s2[i]);
+    }
+    return 0;
+}
+
 void write_state(char *s, t_philosopher *philo)
 {
     pthread_mutex_lock(&philo->param->write_lock);
-    // if (!(get_status(philo) == DIED || is_philo_dead(philo) == true))
-    //     trye
-    printf("%lu %d %s\n", get_time() - philo->param->start_time, philo->id, s);
+    if (philo->last_msg == false)
+        printf("%lu %d %s\n", get_time() - philo->param->start_time, philo->id, s);
     pthread_mutex_unlock(&philo->param->write_lock);
 }
 
@@ -137,6 +147,7 @@ void  *check_for_death(void *data)
             {
                 change_status(&s->philos[i], DIED);
                 write_state("died", &s->philos[i]);
+                s->philos[i].last_msg = true;
                 pthread_mutex_lock(&s->param->is_dead_lock);
                 s->param->is_dead = true;
                 pthread_mutex_unlock(&s->param->is_dead_lock);
@@ -279,6 +290,7 @@ int main (int ac, char **av)
         philos[i].id = i + 1;
         philos[i].number_of_meals = 0;
         philos[i].full = false;
+        philos[i].last_msg = false;
         philos[i].status = STARTING;
         // ASSIGN FORKS
         philos[i].right_fork = &forks[i];
