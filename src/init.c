@@ -15,7 +15,7 @@ int param_init(t_param *param)
         return (EXIT_FAILURE);
     if (pthread_mutex_init(&param->launch_lock, NULL) == -1)
         return (EXIT_FAILURE);
-    if (pthread_mutex_init(&param->is_dead_lock, NULL) == -1);
+    if (pthread_mutex_init(&param->is_dead_lock, NULL) == -1)
         return (EXIT_FAILURE);
     return (EXIT_SUCCESS);
 }
@@ -33,7 +33,7 @@ int forks_init(t_fork *forks, t_param *param)
         return (EXIT_FAILURE);
     while (i < param->number_of_philosophers)
     {
-        if (pthread_mutex_init(&(forks[i].lock), NULL));
+        if (pthread_mutex_init(&(forks[i].lock), NULL) == -1)
             return (EXIT_FAILURE);
         forks[i].id = i;
         forks[i].is_availble = 1;

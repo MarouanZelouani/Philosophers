@@ -28,7 +28,7 @@ int check_arguments(int ac, char **av)
         j = 0;
         while (av[i][j])
         {
-            if (ft_isdigit(av[i][j]))
+            if (!ft_isdigit(av[i][j]))
                 return(i);
             j++;
         }
@@ -41,7 +41,7 @@ int get_data(int ac, char **av, t_param *param)
 {
     int error;
     
-    if (ac != 4 || ac != 5)
+    if (ac != 5 && ac != 6)
         _error(0, av);
     error = check_arguments(ac, av);
     if (error != 0)
@@ -51,7 +51,8 @@ int get_data(int ac, char **av, t_param *param)
     param->time_to_eat = ft_atoi(av[3]);
     param->time_to_sleep = ft_atoi(av[4]);
     param->number_of_meals = -1;
-    if (ac == 5)
+    if (ac == 6)
         param->number_of_meals = ft_atoi(av[5]);
+    printf("end\n");
     return(EXIT_SUCCESS);   
 }
