@@ -10,10 +10,10 @@
 #include <time.h>
 #include <stdbool.h>
 
-#define NUMBER_OF_PHILOS 5
-#define TIME_TO_DIE 210
-#define TIME_TO_EAT 200
-#define TIME_TO_SLEEP 100
+#define NUMBER_OF_PHILOS 3
+#define TIME_TO_DIE 110
+#define TIME_TO_EAT 100
+#define TIME_TO_SLEEP 50
 #define MAX_MEALS -1
 
 enum status 
@@ -76,5 +76,37 @@ typedef struct s_supervisor
     t_param *param;
     t_philosopher *philos;
 } t_supervisor;
+
+// LIBFT UTILS
+int	ft_isdigit(int arg);
+int	ft_atoi(const char *str);
+int ft_strcmp(char *s1, char *s2);
+
+// PARSING
+int get_data(int ac, char **av, t_param *param);
+
+// INIT DATA
+int data_init(t_param *param, t_philosopher *philos, \
+    t_fork *forks, t_supervisor *supervisor);
+
+// THREADS STUFF
+int start_sumulation(t_philosopher *philos, t_supervisor supervisor);
+int threads_join(t_philosopher *philos, t_supervisor supervisor);
+void    *check_for_death(void *data);
+void    *routine (void *data);
+
+// UTILS
+long get_time(void);
+void change_status(t_philosopher *philo, enum status status);
+void	ft_usleep(long time_to_sleep);
+enum status get_status(t_philosopher *philo);
+void write_state(char *s, t_philosopher *philo);
+
+// DEATH
+void  *check_for_death(void *data);
+bool dinner_end(t_philosopher *philos);
+bool is_philo_dead(t_philosopher *philo);
+bool is_dead(t_philosopher *philo);
+
 
 #endif

@@ -200,8 +200,8 @@ void *routine (void *data)
     //     philo->param->launch = true;
     //     pthread_mutex_unlock(&philo->param->launch_lock);
     // }
-    if (philo->id % 2 != 0)
-        ft_usleep(TIME_TO_EAT);
+    // if (philo->id % 2 != 0)
+    //     ft_usleep(TIME_TO_EAT);
     while (!dead && is_dead(philo) == false)
     {   
         // EATING
