@@ -12,9 +12,9 @@ CFILES =	./src/death.c\
 OFILES = $(CFILES:.c=.o)
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror #-fsanitize=thread
 AR = ac rc
-RM = rm -rf
+RM = rm -rf	
 
 $(NAME) :	$(OFILES)
 			$(CC) $(CFLAGS) $(OFILES) -o $(NAME) 			

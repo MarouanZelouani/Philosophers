@@ -19,8 +19,8 @@ bool is_philo_dead(t_philosopher *philo)
 
     is_dead = false;
     pthread_mutex_lock(&philo->lock);
-    if (get_time() - philo->last_meal_time >= TIME_TO_DIE 
-    && philo->status == THINKING)
+    if (get_time() - philo->last_meal_time > philo->param->time_to_die
+        && philo->status == THINKING)
         is_dead = true;
     pthread_mutex_unlock(&philo->lock);
     return (is_dead);
@@ -28,21 +28,21 @@ bool is_philo_dead(t_philosopher *philo)
 
 bool dinner_end(t_philosopher *philos)
 {
-    int n;
-    int i;
+    size_t n;
+    size_t i;
 
     n = 0;
     i = 0;
-    while (i < NUMBER_OF_PHILOS)
+    while (i < philos->param->number_of_philosophers)
     {
         pthread_mutex_lock(&philos[i].meals_lock);
-        if (philos[i].number_of_meals >= MAX_MEALS
-        && MAX_MEALS != -1)
+        if (philos[i].number_of_meals >= philos->param->number_of_meals
+        && philos->param->number_of_meals != -1)
             n++;
         pthread_mutex_unlock(&philos[i].meals_lock);
         i++;
     }
-    if(n >= NUMBER_OF_PHILOS || is_dead(&philos[0]))
+    if(n >= philos->param->number_of_philosophers || is_dead(&philos[0]))
         return (true);
     return (false);
 }
@@ -51,13 +51,13 @@ bool dinner_end(t_philosopher *philos)
 void  *check_for_death(void *data)
 {
     t_supervisor *s;
-    int i;
+    size_t i;
 
     s = (t_supervisor *)data;
     while (dinner_end(s->philos) == false)
     {
         i = 0;
-        while (i < NUMBER_OF_PHILOS )
+        while (i < s->param->number_of_philosophers )
         {
             if (get_status(&s->philos[i]) == THINKING
             && is_philo_dead(&s->philos[i]) == true)

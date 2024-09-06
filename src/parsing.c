@@ -18,8 +18,8 @@ void _error(int code, char **av)
 
 int check_arguments(int ac, char **av)
 {
-    int i;
-    int j;
+    size_t i;
+    size_t j;
 
     (void)ac;
     i = 1;
@@ -53,6 +53,5 @@ int get_data(int ac, char **av, t_param *param)
     param->number_of_meals = -1;
     if (ac == 6)
         param->number_of_meals = ft_atoi(av[5]);
-    printf("end\n");
     return(EXIT_SUCCESS);   
 }

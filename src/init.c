@@ -21,22 +21,22 @@ int param_init(t_param *param)
 }
 
 // INIT FORKS
-int forks_init(t_fork *forks, t_param *param)
+int forks_init(t_fork **forks, t_param *param)
 {
-    int i;
+    size_t i;
     int error;
 
     i = 0;
     error = 0;
-    forks = malloc (sizeof(t_fork) * param->number_of_philosophers);
-    if (forks == NULL)
+    *forks = malloc (sizeof(t_fork) * param->number_of_philosophers);
+    if (*forks == NULL)
         return (EXIT_FAILURE);
     while (i < param->number_of_philosophers)
     {
-        if (pthread_mutex_init(&(forks[i].lock), NULL) == -1)
+        if (pthread_mutex_init(&(*forks)[i].lock, NULL) == -1)
             return (EXIT_FAILURE);
-        forks[i].id = i;
-        forks[i].is_availble = 1;
+        (*forks)[i].id = i;
+        (*forks)[i].is_availble = 1;
         i++;
     }
     return (EXIT_SUCCESS);
@@ -44,46 +44,50 @@ int forks_init(t_fork *forks, t_param *param)
 
 
 // INIT PHILOSOPHERS
-int philosophers_init(t_philosopher *philos, t_fork *forks, t_param *param)
+int philosophers_init(t_philosopher **philos, t_fork *forks, t_param *param)
 {
-    int i;
+    size_t i;
 
     i = 0;
-    philos = malloc (sizeof(t_philosopher) * param->number_of_philosophers);
-    if (philos == NULL)
+    // printf()
+    (void)forks;
+    *philos = malloc (sizeof(t_philosopher) * param->number_of_philosophers);
+    if (*philos == NULL)
         return (EXIT_FAILURE);
     while (i < param->number_of_philosophers)
     {
-        philos[i].id = i + 1;
-        philos[i].number_of_meals = 0;
-        philos[i].full = false;
-        philos[i].last_msg = false;
-        philos[i].status = STARTING;
+        (*philos)[i].id = i + 1;
+        (*philos)[i].number_of_meals = 0;
+        (*philos)[i].full = false;
+        (*philos)[i].last_msg = false;
+        (*philos)[i].status = STARTING;
         // ASSIGN FORKS
-        philos[i].right_fork = &forks[i];
-        philos[i].left_fork = &forks[(i + 1) % NUMBER_OF_PHILOS];
-        philos[i].param = param;
-        if (pthread_mutex_init(&philos[i].status_lock, NULL) == -1)
+        //printf("i = %ld | %ld\n", i, param->number_of_philosophers);
+        //exit(1);
+        (*philos)[i].right_fork = &forks[i];
+        (*philos)[i].left_fork = &forks[(i + 1) % param->number_of_philosophers];
+        (*philos)[i].param = param;
+        if (pthread_mutex_init(&((*philos)[i].status_lock), NULL) == -1)
             return (EXIT_FAILURE);
-        if (pthread_mutex_init(&philos[i].lock, NULL) == -1)
+        if (pthread_mutex_init(&((*philos)[i].lock), NULL) == -1)
             return (EXIT_FAILURE);
-        if (pthread_mutex_init(&philos[i].meals_lock, NULL) == -1)
+        if (pthread_mutex_init(&((*philos)[i].meals_lock), NULL) == -1)
             return (EXIT_FAILURE);
         i++;
     }    
     return (EXIT_SUCCESS);
 }
 
-int data_init(t_param *param, t_philosopher *philos, t_fork *forks, t_supervisor *supervisor)
+int data_init(t_param *param, t_philosopher **philos, t_fork **forks, t_supervisor *supervisor)
 {   
     // INIT DATA
-    if (!param_init(param))
+    if (param_init(param))
         return (EXIT_FAILURE);
-    else if (!philosophers_init(philos, forks, param))
+    else if (philosophers_init(philos, *forks, param))
         return (EXIT_FAILURE);
-    else if (!forks_init(forks, param))
+    else if (forks_init(forks, param))
         return (EXIT_FAILURE);
     supervisor->param = param;
-    supervisor->philos = philos;
+    supervisor->philos = *philos;
     return (EXIT_SUCCESS);
 }

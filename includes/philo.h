@@ -10,11 +10,7 @@
 #include <time.h>
 #include <stdbool.h>
 
-#define NUMBER_OF_PHILOS 3
-#define TIME_TO_DIE 110
-#define TIME_TO_EAT 100
-#define TIME_TO_SLEEP 50
-#define MAX_MEALS -1
+
 
 enum status 
 {
@@ -28,17 +24,17 @@ enum status
 
 typedef struct s_param
 {
-    int number_of_philosophers;
-    int time_to_die;
-    int time_to_eat;
-    int time_to_sleep;
+    size_t number_of_philosophers;
+    size_t time_to_die;
+    size_t time_to_eat;
+    size_t time_to_sleep;
     int number_of_meals;
     int threads_ready;
     long start_time;
     bool launch;
     bool is_dead;
     bool philos_are_full;
-    int number_of_full_philos;
+    size_t number_of_full_philos;
     pthread_mutex_t full_lock;
     pthread_mutex_t is_dead_lock;
     pthread_mutex_t launch_lock;
@@ -62,7 +58,7 @@ typedef struct s_philosopher
     bool full;
     bool last_msg;
     int number_of_meals;
-    long last_meal_time;
+    unsigned long long last_meal_time;
     enum status status;
     pthread_mutex_t status_lock;
     pthread_mutex_t lock;
@@ -77,6 +73,7 @@ typedef struct s_supervisor
     t_philosopher *philos;
 } t_supervisor;
 
+
 // LIBFT UTILS
 int	ft_isdigit(int arg);
 int	ft_atoi(const char *str);
@@ -86,12 +83,15 @@ int ft_strcmp(char *s1, char *s2);
 int get_data(int ac, char **av, t_param *param);
 
 // INIT DATA
-int data_init(t_param *param, t_philosopher *philos, \
-    t_fork *forks, t_supervisor *supervisor);
+// int data_init(t_param *param, t_philosopher **philos, \
+//     t_fork **forks, t_supervisor *supervisor);
+int param_init(t_param *param);
+int forks_init(t_fork **forks, t_param *param);
+int philosophers_init(t_philosopher **philos, t_fork *forks, t_param *param);
 
 // THREADS STUFF
-int start_sumulation(t_philosopher *philos, t_supervisor supervisor);
-int threads_join(t_philosopher *philos, t_supervisor supervisor);
+int start_sumulation(t_philosopher *philos, t_supervisor *supervisor);
+int threads_join(t_philosopher *philos, t_supervisor *supervisor);
 void    *check_for_death(void *data);
 void    *routine (void *data);
 

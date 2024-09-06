@@ -11,7 +11,7 @@ int	ft_atoi(const char *str)
 {
 	int					sign;
 	unsigned long		result;
-	int					i;
+	size_t					i;
 
 	sign = 1;
 	result = 0;
@@ -35,7 +35,9 @@ int	ft_atoi(const char *str)
 
 int ft_strcmp(char *s1, char *s2)
 {
-    int i = 0;
+    size_t	i;
+	
+	i = 0;
     while (s1[i] || s2[i])
     {
         if (s1[i] - s2[i] != 0)

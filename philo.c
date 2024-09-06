@@ -72,7 +72,7 @@ bool dinner_end(t_philosopher *philos)
     n = 0;
     i = 0;
     // printf("check started\n");
-    while (i < NUMBER_OF_PHILOS)
+    while (i < philos->param->number_of_philosophers)
     {
         //write_state("checking...", &philos[i]);
         pthread_mutex_lock(&philos[i].meals_lock);
@@ -84,7 +84,7 @@ bool dinner_end(t_philosopher *philos)
     }
     // if (is_dead(&philos[0]) == true)
     //         printf("dead\n");
-    if(n >= NUMBER_OF_PHILOS || is_dead(&philos[0]))
+    if(n >= philos->param->number_of_philosophers || is_dead(&philos[0]))
         return (true);
     return (false);
 }
