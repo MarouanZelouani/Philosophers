@@ -1,4 +1,4 @@
-#include "../includes/philo.h"
+#include "../includes/philo_bonus.h"
 
 void _error(int code, char **av)
 {
@@ -50,7 +50,7 @@ static int check_numbers(t_param *param)
     return EXIT_SUCCESS;
 }
 
-int get_data(int ac, char **av, t_param *param)
+int get_args(int ac, char **av, t_param *param)
 {
     int error;
     

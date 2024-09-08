@@ -83,7 +83,7 @@ int ft_strcmp(char *s1, char *s2);
 int get_data(int ac, char **av, t_param *param);
 
 // INIT DATA
-// int data_init(t_param *param, t_philosopher **philos, \
+// int data_init(t_param *param, t_philosopher **philos, 
 //     t_fork **forks, t_supervisor *supervisor);
 int param_init(t_param *param);
 int forks_init(t_fork **forks, t_param *param);

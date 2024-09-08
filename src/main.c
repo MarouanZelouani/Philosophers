@@ -9,9 +9,8 @@ int main (int ac, char **av)
 
     philos = NULL;
     forks = NULL;
-    get_data(ac, av, &param);
-    // if (data_init(&param, &philos, &forks, &supervisor))
-    //     return (EXIT_FAILURE);
+    if (get_data(ac, av, &param))
+        return EXIT_FAILURE;
     // INIT DATA
     if (param_init(&param))
         return (EXIT_FAILURE);

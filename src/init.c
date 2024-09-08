@@ -50,7 +50,7 @@ int philosophers_init(t_philosopher **philos, t_fork *forks, t_param *param)
 
     i = 0;
     // printf()
-    (void)forks;
+    //(void)forks;
     *philos = malloc (sizeof(t_philosopher) * param->number_of_philosophers);
     if (*philos == NULL)
         return (EXIT_FAILURE);
