@@ -1,0 +1,93 @@
+#define NUM_PHILOSOPHERS 5
+
+// Declare an array of semaphores to represent chopsticks
+sem_t *chopsticks[NUM_PHILOSOPHERS];
+
+// Function to simulate thinking
+void think(int philosopher_id) {
+    printf("Philosopher %d is thinking...\n", philosopher_id);
+    sleep(rand() % 3 + 1);  // Think for a random amount of time (1-3 seconds)
+}
+
+// Function to simulate eating
+void eat(int philosopher_id) {
+    printf("Philosopher %d is eating...\n", philosopher_id);
+    sleep(rand() % 3 + 1);  // Eat for a random amount of time (1-3 seconds)
+}
+
+// Philosopher process
+void philosopher(int philosopher_id) {
+    int left = philosopher_id;                // Left chopstick
+    int right = (philosopher_id + 1) % NUM_PHILOSOPHERS;  // Right chopstick
+
+    while (1) {
+        think(philosopher_id);
+
+        // Pick up chopsticks (wait on both semaphores)
+        if (philosopher_id % 2 == 0) {
+            // Pick up left then right to avoid deadlock
+            sem_wait(chopsticks[left]);
+            printf("Philosopher %d picked up left chopstick %d.\n", philosopher_id, left);
+            sem_wait(chopsticks[right]);
+            printf("Philosopher %d picked up right chopstick %d.\n", philosopher_id, right);
+        } else {
+            // Pick up right then left
+            sem_wait(chopsticks[right]);
+            printf("Philosopher %d picked up right chopstick %d.\n", philosopher_id, right);
+            sem_wait(chopsticks[left]);
+            printf("Philosopher %d picked up left chopstick %d.\n", philosopher_id, left);
+        }
+
+        // Eat after picking up both chopsticks
+        eat(philosopher_id);
+
+        // Put down chopsticks (post on both semaphores)
+        sem_post(chopsticks[left]);
+        printf("Philosopher %d put down left chopstick %d.\n", philosopher_id, left);
+        sem_post(chopsticks[right]);
+        printf("Philosopher %d put down right chopstick %d.\n", philosopher_id, right);
+    }
+}
+
+int main() {
+    pid_t pids[NUM_PHILOSOPHERS];
+
+    // Initialize semaphores for chopsticks
+    for (int i = 0; i < NUM_PHILOSOPHERS; i++) {
+        char sem_name[10];
+        snprintf(sem_name, 10, "/chopstick%d", i);
+        chopsticks[i] = sem_open(sem_name, O_CREAT, 0644, 1);
+        if (chopsticks[i] == SEM_FAILED) {
+            perror("sem_open failed");
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    // Create philosopher processes
+    for (int i = 0; i < NUM_PHILOSOPHERS; i++) {
+        pids[i] = fork();
+        if (pids[i] == 0) {
+            // Child process: philosopher i
+            philosopher(i);
+            exit(0);  // Child process should exit after finishing the philosopher routine
+        } else if (pids[i] < 0) {
+            perror("fork failed");
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    // Wait for all philosophers to finish (this never happens in the infinite loop)
+    for (int i = 0; i < NUM_PHILOSOPHERS; i++) {
+        wait(NULL);
+    }
+
+    // Cleanup: Close and unlink semaphores
+    for (int i = 0; i < NUM_PHILOSOPHERS; i++) {
+        char sem_name[10];
+        snprintf(sem_name, 10, "/chopstick%d", i);
+        sem_close(chopsticks[i]);
+        sem_unlink(sem_name);
+    }
+
+    return 0;
+}
