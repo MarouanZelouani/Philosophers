@@ -24,3 +24,18 @@ void write_state(char *s, t_philosopher *philo)
         printf("%lu %d %s\n", get_time() - philo->param->start_time, philo->id, s);
     sem_post(philo->param->write_sem);
 }
+
+void cleanup(t_param *param, t_philosopher *philos)
+{
+	size_t i;
+
+	i = 0;
+    sem_close(param->forks_sem);
+	sem_close(param->write_sem);
+	sem_unlink(SEM_FORKS);
+	sem_unlink(SEM_WRITE);
+	// while (i < param->number_of_philosophers)
+	// {
+	// 	i++;
+	// }
+}

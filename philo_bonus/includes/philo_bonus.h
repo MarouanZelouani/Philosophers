@@ -7,14 +7,18 @@
 #include <pthread.h>
 #include <sys/time.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <time.h>
 #include <stdbool.h>
 #include <semaphore.h>
 #include <fcntl.h>
+#include <signal.h>
 
-# define SEM_DEATH "/semdeath"
 # define SEM_WRITE "/semwrite"
 # define SEM_FORKS "/semforks" 
+
+# define DEATH_EX_STAUS 1
+# define FULL_EX_STATUS 0
 
 typedef struct s_param
 {
@@ -31,9 +35,6 @@ typedef struct s_param
     bool philos_are_full;
     size_t number_of_full_philos;
 
-    pid_t *philos_id; // remove this
-
-    sem_t *death_sem;
     sem_t *write_sem;
     sem_t *forks_sem;
 } t_param;
@@ -44,7 +45,6 @@ typedef struct s_philo
     pid_t p_id;
     bool full;
     bool last_msg;
-    int number_of_meals;
     unsigned long long last_meal_time;
     t_param *param;
 } t_philosopher;
@@ -57,5 +57,9 @@ int start_simulation(t_philosopher *philo, t_param *param);
 long get_time(void);
 void	ft_usleep(long time_to_sleep);
 void write_state(char *s, t_philosopher *philo);
+int	ft_atoi(const char *str);
+int	ft_isdigit(int arg);
+int ft_strcmp(char *s1, char *s2);
+void cleanup(t_param *param, t_philosopher *philos);
 
 #endif
