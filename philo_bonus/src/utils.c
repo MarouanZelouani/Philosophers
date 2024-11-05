@@ -17,7 +17,7 @@ void	ft_usleep(long time_to_sleep)
 		usleep(time_to_sleep / 10);
 }
 
-void write_state(char *s, t_philosopher *philo)
+void write_state(char *s, t_philosopher *philo, bool stop)
 {
     sem_wait(philo->param->write_sem);
     printf("%lu %d %s\n", get_time() - philo->param->start_time, philo->id, s);

@@ -35,10 +35,16 @@ enum status get_status(t_philosopher *philo)
     return (status);
 }
 
-void write_state(char *s, t_philosopher *philo)
+void write_state(char *s, t_philosopher *philo, bool stop)
 {
+    static bool last_message = false;
+
     pthread_mutex_lock(&philo->param->write_lock);
-    if (philo->last_msg == false && !is_dead(philo))
+    if (last_message == false && philo->last_msg == false && is_dead(philo) == false)
+    {
         printf("%lu %d %s\n", get_time() - philo->param->start_time, philo->id, s);
+    }
+    if (stop == true)
+        last_message = true;
     pthread_mutex_unlock(&philo->param->write_lock);
 }

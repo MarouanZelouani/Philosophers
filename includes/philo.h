@@ -100,7 +100,7 @@ long get_time(void);
 void change_status(t_philosopher *philo, enum status status);
 void	ft_usleep(long time_to_sleep);
 enum status get_status(t_philosopher *philo);
-void write_state(char *s, t_philosopher *philo);
+void write_state(char *s, t_philosopher *philo, bool stop);
 
 // DEATH
 void  *check_for_death(void *data);

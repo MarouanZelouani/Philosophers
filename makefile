@@ -12,7 +12,7 @@ CFILES =	./src/death.c\
 OFILES = $(CFILES:.c=.o)
 
 CC = cc
-CFLAGS = #-3Wall -Wextra -Werror #-fsanitize=thread
+CFLAGS = #-Wall -Wextra -Werror #-fsanitize=thread
 AR = ac rc
 RM = rm -rf	
 
@@ -20,9 +20,6 @@ $(NAME) :	$(OFILES)
 			$(CC) $(CFLAGS) $(OFILES) -o $(NAME) 			
 
 all :	$(NAME)
-
-%.o:%.c
-	$(CC) $(CFLAGS) -c $< -o $@
 
 re : fclean $(NAME)
 
