@@ -14,8 +14,8 @@
 #include <fcntl.h>
 #include <signal.h>
 
-# define SEM_WRITE "/semwrite"
-# define SEM_FORKS "/semforks" 
+# define SEM_WRITE "semwrite"
+# define SEM_FORKS "semforks" 
 
 # define DEATH_EX_STAUS 1
 # define FULL_EX_STATUS 0
@@ -45,11 +45,12 @@ typedef struct s_philo
     pid_t p_id;
     bool full;
     bool last_msg;
+    bool is_dead;
     unsigned long long last_meal_time;
     t_param *param;
 } t_philosopher;
 
-int get_args(int ac, char **av, t_param *param);
+int get_args(int ac, char **av, t_param **param);
 int init_data(t_philosopher **philos, t_param *param);
 int start_simulation(t_philosopher *philo, t_param *param);
 

@@ -3,12 +3,12 @@
 int sem_creat(t_param *param)
 {
     // unlink semaphores
-    if (sem_unlink(SEM_FORKS) == -1 || sem_unlink(SEM_WRITE) == -1)
-        return (EXIT_FAILURE);
+    sem_unlink(SEM_FORKS);
+    sem_unlink(SEM_WRITE);
     // open semaphores
     param->forks_sem = sem_open(SEM_FORKS, O_CREAT, 0644, param->number_of_philosophers);
     param->write_sem = sem_open(SEM_WRITE, O_CREAT, 0644, 1);
-    if (param->forks_sem != SEM_FAILED || param->write_sem != SEM_FAILED)
+    if (param->forks_sem == SEM_FAILED || param->write_sem == SEM_FAILED)
         return (EXIT_FAILURE);
     return (EXIT_SUCCESS);
 }
@@ -26,9 +26,13 @@ int init_data(t_philosopher **philos, t_param *param)
         (*philos)[i].id = i + 1;
         (*philos)[i].full = false;
         (*philos)[i].last_msg = false;
+        (*philos)[i].is_dead = false;
+        (*philos)[i].last_meal_time = param->start_time;
         (*philos)[i].param = param;
         i++;
     }
+    if (sem_creat(param))
+        return (EXIT_FAILURE);
     // param->philos_id = malloc (sizeof(pid_t) * param->number_of_philosophers);
     // if (param->philos_id == NULL)
     //     return EXIT_FAILURE;

@@ -17,6 +17,7 @@ int philo_routine(t_philosopher *p)
 
     s_end = 0;
     number_of_meals = 0;
+    p->last_meal_time = get_time();
     while (1)
     {   
         if (is_dead(p))

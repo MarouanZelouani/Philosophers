@@ -8,16 +8,27 @@ int start_sumulation(t_philosopher *philos, t_supervisor *supervisor)
     //exit(1);
     //  ARRAY DECLARATION LMOUCHKIL KAIN FI INIT
     //printf("PHILO = %d\n", philos[i].id);
+    if (pthread_create(&supervisor->thread, NULL, &check_for_death, supervisor) == -1)
+        return (EXIT_FAILURE);
     while (i < philos->param->number_of_philosophers)
     {
         if (pthread_create(&(philos[i].thread), NULL, &routine, &philos[i]) == -1)
             return (EXIT_FAILURE);
+        // pthread_detach(philos[i].thread);
         i++;
     }
-    if (pthread_create(&supervisor->thread, NULL, &check_for_death, supervisor) == -1)
-        return (EXIT_FAILURE);
     // printf("start\n");
     return (EXIT_SUCCESS);
+}
+
+int handle_one_philo(t_philosopher *philo)
+{
+    pthread_mutex_lock(&philo->right_fork->lock);
+    write_state("has taken a fork", philo);
+    pthread_mutex_unlock(&philo->right_fork->lock);
+    ft_usleep(philo->param->time_to_die);
+    write_state("died", philo);
+    return (0);
 }
 
 int threads_join(t_philosopher *philos, t_supervisor *supervisor)
@@ -27,14 +38,12 @@ int threads_join(t_philosopher *philos, t_supervisor *supervisor)
 
     i = 0;
     philo_number = philos[i].param->number_of_philosophers;
+    pthread_join(supervisor->thread, NULL);
     while (i < philo_number)
     {
         pthread_join(philos[i].thread, NULL);
-           
         i++;
     }
-    pthread_join(supervisor->thread, NULL);
-        
     return (EXIT_SUCCESS);
 }
 

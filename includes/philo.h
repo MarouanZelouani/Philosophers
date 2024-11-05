@@ -10,8 +10,6 @@
 #include <time.h>
 #include <stdbool.h>
 
-
-
 enum status 
 {
     STARTING,
@@ -19,6 +17,7 @@ enum status
     EATING,
     SLEEPING,
     THINKING,
+    FULL,
     DIED
 };
 
@@ -93,6 +92,7 @@ int philosophers_init(t_philosopher **philos, t_fork *forks, t_param *param);
 int start_sumulation(t_philosopher *philos, t_supervisor *supervisor);
 int threads_join(t_philosopher *philos, t_supervisor *supervisor);
 void    *check_for_death(void *data);
+int handle_one_philo(t_philosopher *philo);
 void    *routine (void *data);
 
 // UTILS

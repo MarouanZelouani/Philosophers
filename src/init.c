@@ -7,7 +7,7 @@ int param_init(t_param *param)
     param->threads_ready = 0;
     param->launch = false;
     param->is_dead = false;
-    param->start_time = get_time(); // START     
+    param->start_time = get_time(); // START 
     // ALLWAYS INIT YOUR MUTEXS!!
     if (pthread_mutex_init(&param->write_lock, NULL) == -1)
         return (EXIT_FAILURE);
@@ -61,6 +61,7 @@ int philosophers_init(t_philosopher **philos, t_fork *forks, t_param *param)
         (*philos)[i].full = false;
         (*philos)[i].last_msg = false;
         (*philos)[i].status = STARTING;
+        (*philos)[i].last_meal_time = param->start_time;
         // ASSIGN FORKS
         //printf("i = %ld | %ld\n", i, param->number_of_philosophers);
         //exit(1);

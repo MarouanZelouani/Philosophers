@@ -18,18 +18,17 @@ int main (int ac, char **av)
         return (EXIT_FAILURE);
     if (philosophers_init(&philos, forks, &param))
         return (EXIT_FAILURE);
-    // exit(1);
-    //supervisor.param = param;
-    supervisor = malloc (sizeof(t_supervisor));
+    if (param.number_of_philosophers == 1)
+    {
+        handle_one_philo(philos);
+        return(EXIT_SUCCESS);
+    }
+    supervisor = malloc(sizeof(t_supervisor));
     supervisor->param = &param;
     supervisor->philos = philos;
     if (start_sumulation(philos, supervisor))
         return (EXIT_FAILURE);
     if (threads_join(philos, supervisor))
-    {
-        
         return (EXIT_FAILURE);
-    }
-    // while(1);
     return (EXIT_SUCCESS);
 }

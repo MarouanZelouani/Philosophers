@@ -50,7 +50,7 @@ static int check_numbers(t_param *param)
     return EXIT_SUCCESS;
 }
 
-int get_args(int ac, char **av, t_param *param)
+int get_args(int ac, char **av, t_param **param)
 {
     int error;
     
@@ -59,14 +59,17 @@ int get_args(int ac, char **av, t_param *param)
     error = check_arguments(ac, av);
     if (error != 0)
         _error(error, av);
-    param->number_of_philosophers = ft_atoi(av[1]);
-    param->time_to_die = ft_atoi(av[2]);
-    param->time_to_eat = ft_atoi(av[3]);
-    param->time_to_sleep = ft_atoi(av[4]);
-    param->number_of_meals = -1;
+    *param = malloc (sizeof(t_param));
+    if (*param == NULL)
+        return (EXIT_FAILURE);
+    (*param)->number_of_philosophers = ft_atoi(av[1]);
+    (*param)->time_to_die = ft_atoi(av[2]);
+    (*param)->time_to_eat = ft_atoi(av[3]);
+    (*param)->time_to_sleep = ft_atoi(av[4]);
+    (*param)->number_of_meals = -1;
     if (ac == 6)
-        param->number_of_meals = ft_atoi(av[5]);
-    if (check_numbers(param))
+        (*param)->number_of_meals = ft_atoi(av[5]);
+    if (check_numbers(*param))
         return EXIT_FAILURE;
     return(EXIT_SUCCESS);   
 }
