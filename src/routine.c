@@ -22,18 +22,18 @@ int take_forks(t_philosopher *philo)
     if (philo->id % 2 == 0 && is_philo_dead(philo) == false)
     {
         pthread_mutex_lock(&philo->left_fork->lock);
-        write_state("has taken a fork left", philo, false);
+        write_state("has taken a fork", philo, false);
         pthread_mutex_lock(&philo->right_fork->lock);
-        write_state("has taken a fork right", philo, false);
+        write_state("has taken a fork", philo, false);
     }
     else if (philo->id % 2 != 0 && is_philo_dead(philo) == false)
     {
         usleep(100);
         pthread_mutex_lock(&philo->right_fork->lock);
-        write_state("has taken a fork right", philo, false);
+        write_state("has taken a fork", philo, false);
         usleep(100);
         pthread_mutex_lock(&philo->left_fork->lock);
-        write_state("has taken a fork left", philo, false);
+        write_state("has taken a fork", philo, false);
     }
     return (0);
 }
