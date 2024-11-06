@@ -5,29 +5,24 @@ int start_sumulation(t_philosopher *philos, t_supervisor *supervisor)
     size_t i;
 
     i = 0;
-    //exit(1);
-    //  ARRAY DECLARATION LMOUCHKIL KAIN FI INIT
-    //printf("PHILO = %d\n", philos[i].id);
     if (pthread_create(&supervisor->thread, NULL, &check_for_death, supervisor) == -1)
         return (EXIT_FAILURE);
     while (i < philos->param->number_of_philosophers)
     {
         if (pthread_create(&(philos[i].thread), NULL, &routine, &philos[i]) == -1)
             return (EXIT_FAILURE);
-        // pthread_detach(philos[i].thread);
         i++;
     }
-    // printf("start\n");
     return (EXIT_SUCCESS);
 }
 
 int handle_one_philo(t_philosopher *philo)
 {
     pthread_mutex_lock(&philo->right_fork->lock);
-    write_state("has taken a fork", philo);
+    write_state("has taken a fork", philo, false);
     pthread_mutex_unlock(&philo->right_fork->lock);
     ft_usleep(philo->param->time_to_die);
-    write_state("died", philo);
+    write_state("died", philo, true);
     return (0);
 }
 

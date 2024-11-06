@@ -19,7 +19,7 @@ bool is_philo_dead(t_philosopher *philo)
 
     is_dead = false;
     pthread_mutex_lock(&philo->lock);
-    if (get_time() - philo->last_meal_time >= philo->param->time_to_die)
+    if (get_time() - philo->last_meal_time > philo->param->time_to_die)
         is_dead = true;
     pthread_mutex_unlock(&philo->lock);
     return (is_dead);
@@ -66,6 +66,7 @@ void  *check_for_death(void *data)
             break;
         if (check_philos_condition(s->philos, &finished_philos))
             break;
+        usleep(50);
     }
     return (NULL);
 }
