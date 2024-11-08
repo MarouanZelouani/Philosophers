@@ -25,18 +25,19 @@ bool is_philo_dead(t_philosopher *philo)
     return (is_dead);
 }
 
-int check_philos_condition(t_philosopher *philos, size_t *finished)
+int check_philos_condition(t_philosopher *philos)
 {
     size_t itr;
     t_param *tmp_param;
-
+    size_t finished;
 
     itr = 0;
+    finished = 0;
     tmp_param = philos[0].param;
     while (itr < tmp_param->number_of_philosophers)
     {
         if (get_status(&philos[itr]) == FULL)
-            *finished++;
+          finished++;
         else if (is_philo_dead(&philos[itr]) == true )
         {
             change_status(&philos[itr], DIED);
@@ -49,22 +50,20 @@ int check_philos_condition(t_philosopher *philos, size_t *finished)
         }
         itr++;
     }
+    if (finished == philos->param->number_of_philosophers)
+      return (1);
     return (0);
 }
 
 // CHECK IF A PHILOSOPHER DIED
 void  *check_for_death(void *data)
 {
-    t_supervisor *s;
-    size_t finished_philos;
+    t_monitor *s;
 
-    s = (t_supervisor *)data;
-    finished_philos = 0;
+    s = (t_monitor *)data;
     while (true)
     {
-        if (finished_philos == s->param->number_of_philosophers)
-            break;
-        if (check_philos_condition(s->philos, &finished_philos))
+        if (check_philos_condition(s->philos))
             break;
         usleep(50);
     }

@@ -11,7 +11,7 @@ long get_time(void)
 void change_status(t_philosopher *philo, enum status status)
 {
     pthread_mutex_lock(&philo->status_lock);
-    if (philo->status != DIED) 
+    if (philo->status != DIED)
         philo->status = status;
     pthread_mutex_unlock(&philo->status_lock);
 }
@@ -28,7 +28,7 @@ void	ft_usleep(long time_to_sleep)
 enum status get_status(t_philosopher *philo)
 {
     enum status status;
-    
+
     pthread_mutex_lock(&philo->status_lock);
     status = philo->status;
     pthread_mutex_unlock(&philo->status_lock);
@@ -41,9 +41,7 @@ void write_state(char *s, t_philosopher *philo, bool stop)
 
     pthread_mutex_lock(&philo->param->write_lock);
     if (last_message == false && philo->last_msg == false && is_dead(philo) == false)
-    {
         printf("%lu %d %s\n", get_time() - philo->param->start_time, philo->id, s);
-    }
     if (stop == true)
         last_message = true;
     pthread_mutex_unlock(&philo->param->write_lock);
