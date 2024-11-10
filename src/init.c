@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mzelouan <mzelouan@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/10 04:21:03 by mzelouan          #+#    #+#             */
+/*   Updated: 2024/11/10 04:35:04 by mzelouan         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/philo.h"
 
 int param_init(t_param *param);
@@ -6,17 +18,17 @@ int philosophers_init(t_philosopher **philos, t_fork *forks, t_param *param);
 
 int __init(t_philosopher **philos, t_fork **forks, t_param *param, t_monitor **monitor)
 {
-  if (param_init(param))
-    return (EXIT_FAILURE);
-  if (forks_init(forks, param))
-    return (EXIT_FAILURE);
-  if (philosophers_init(philos, *forks, param))
-    return (EXIT_FAILURE);
-  *monitor = malloc(sizeof(t_monitor));
-  if (*monitor == NULL)
-    return (EXIT_FAILURE);
-  (*monitor)->param = param;
-  (*monitor)->philos = *philos;
+    if (param_init(param))
+        return (EXIT_FAILURE);
+    if (forks_init(forks, param))
+        return (EXIT_FAILURE);
+    if (philosophers_init(philos, *forks, param))
+        return (EXIT_FAILURE);
+    *monitor = malloc(sizeof(t_monitor));
+    if (*monitor == NULL)
+        return (EXIT_FAILURE);
+    (*monitor)->param = param;
+    (*monitor)->philos = *philos;
   return (EXIT_SUCCESS);
 }
 
@@ -74,7 +86,6 @@ int philosophers_init(t_philosopher **philos, t_fork *forks, t_param *param)
         (*philos)[i].number_of_meals = 0;
         (*philos)[i].full = false;
         (*philos)[i].last_msg = false;
-        (*philos)[i].status = STARTING;
         (*philos)[i].last_meal_time = param->start_time;
         (*philos)[i].right_fork = &forks[i];
         (*philos)[i].left_fork = &forks[(i + 1) % param->number_of_philosophers];

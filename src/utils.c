@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mzelouan <mzelouan@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/10 04:21:24 by mzelouan          #+#    #+#             */
+/*   Updated: 2024/11/10 04:21:25 by mzelouan         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/philo.h"
 
 long get_time(void)
@@ -16,13 +28,17 @@ void change_status(t_philosopher *philo, enum status status)
     pthread_mutex_unlock(&philo->status_lock);
 }
 
-void	ft_usleep(long time_to_sleep)
+void	ft_usleep(long time_to_sleep, t_philosopher *philo)
 {
 	long	start_time;
 
 	start_time = get_time();
 	while (get_time() - start_time < time_to_sleep)
+    {
 		usleep(time_to_sleep / 10);
+        if (is_dead(philo))
+            break;
+    }
 }
 
 enum status get_status(t_philosopher *philo)

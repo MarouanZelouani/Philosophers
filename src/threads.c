@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   threads.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mzelouan <mzelouan@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/10 04:21:21 by mzelouan          #+#    #+#             */
+/*   Updated: 2024/11/10 04:32:30 by mzelouan         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/philo.h"
 
 int start_sumulation(t_philosopher *philos, t_monitor *monitor)
@@ -5,7 +17,7 @@ int start_sumulation(t_philosopher *philos, t_monitor *monitor)
     size_t i;
 
     i = 0;
-    if (pthread_create(&monitor->thread, NULL, &check_for_death, monitor) == -1)
+    if (pthread_create(&monitor->thread, NULL, &monitor_routine, monitor) == -1)
         return (EXIT_FAILURE);
     while (i < philos->param->number_of_philosophers)
     {
@@ -21,7 +33,7 @@ int handle_one_philo(t_philosopher *philo)
     pthread_mutex_lock(&philo->right_fork->lock);
     write_state("has taken a fork", philo, false);
     pthread_mutex_unlock(&philo->right_fork->lock);
-    ft_usleep(philo->param->time_to_die);
+    ft_usleep(philo->param->time_to_die, philo);
     write_state("died", philo, true);
     return (EXIT_SUCCESS);
 }

@@ -1,6 +1,6 @@
 NAME = philo
 TOOLS = tools.a
-CFILES =	./src/death.c\
+CFILES =	./src/monitor.c\
 			./src/init.c\
 			./src/libft_utils.c\
 			./src/parsing.c\

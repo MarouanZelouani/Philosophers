@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   monitor.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mzelouan <mzelouan@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/10 04:20:59 by mzelouan          #+#    #+#             */
+/*   Updated: 2024/11/10 04:36:54 by mzelouan         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/philo.h"
 
 bool is_dead(t_philosopher *philo)
@@ -56,7 +68,7 @@ int check_philos_condition(t_philosopher *philos)
 }
 
 // CHECK IF A PHILOSOPHER DIED
-void  *check_for_death(void *data)
+void  *monitor_routine(void *data)
 {
     t_monitor *s;
 

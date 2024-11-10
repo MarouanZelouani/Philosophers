@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mzelouan <mzelouan@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/10 04:20:53 by mzelouan          #+#    #+#             */
+/*   Updated: 2024/11/10 04:32:33 by mzelouan         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PHILOSOPHERS_H
 # define PHILOSOPHERS_H
 
@@ -87,19 +99,18 @@ int __init(t_philosopher **philos, t_fork **forks, t_param *param,  t_monitor **
 // THREADS STUFF
 int start_sumulation(t_philosopher *philos, t_monitor *monitor);
 int threads_join(t_philosopher *philos, t_monitor *monitor);
-void    *check_for_death(void *data);
+void    *monitor_routine(void *data);
 int handle_one_philo(t_philosopher *philo);
 void    *routine (void *data);
 
 // UTILS
 long get_time(void);
 void change_status(t_philosopher *philo, enum status status);
-void	ft_usleep(long time_to_sleep);
+void	ft_usleep(long time_to_sleep, t_philosopher *philo);
 enum status get_status(t_philosopher *philo);
 void write_state(char *s, t_philosopher *philo, bool stop);
 
 // DEATH
-void  *check_for_death(void *data);
 bool is_philo_dead(t_philosopher *philo);
 bool is_dead(t_philosopher *philo);
 
