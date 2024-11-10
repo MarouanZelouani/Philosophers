@@ -6,7 +6,7 @@
 /*   By: mzelouan <mzelouan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 04:21:03 by mzelouan          #+#    #+#             */
-/*   Updated: 2024/11/10 04:35:04 by mzelouan         ###   ########.fr       */
+/*   Updated: 2024/11/10 15:35:27 by mzelouan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,16 +35,10 @@ int __init(t_philosopher **philos, t_fork **forks, t_param *param, t_monitor **m
 // INIT DATA
 int param_init(t_param *param)
 {
-    param->threads_ready = 0;
-    param->launch = false;
     param->is_dead = false;
     param->start_time = get_time(); // START
     // ALLWAYS INIT YOUR MUTEXS!!
     if (pthread_mutex_init(&param->write_lock, NULL) == -1)
-        return (EXIT_FAILURE);
-    if (pthread_mutex_init(&param->threads_ready_lock, NULL) == -1)
-        return (EXIT_FAILURE);
-    if (pthread_mutex_init(&param->launch_lock, NULL) == -1)
         return (EXIT_FAILURE);
     if (pthread_mutex_init(&param->is_dead_lock, NULL) == -1)
         return (EXIT_FAILURE);
@@ -84,7 +78,6 @@ int philosophers_init(t_philosopher **philos, t_fork *forks, t_param *param)
     {
         (*philos)[i].id = i + 1;
         (*philos)[i].number_of_meals = 0;
-        (*philos)[i].full = false;
         (*philos)[i].last_msg = false;
         (*philos)[i].last_meal_time = param->start_time;
         (*philos)[i].right_fork = &forks[i];

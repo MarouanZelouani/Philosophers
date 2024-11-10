@@ -6,7 +6,7 @@
 /*   By: mzelouan <mzelouan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 04:21:24 by mzelouan          #+#    #+#             */
-/*   Updated: 2024/11/10 04:21:25 by mzelouan         ###   ########.fr       */
+/*   Updated: 2024/11/10 15:09:47 by mzelouan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ long get_time(void)
 	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
 }
 
-void change_status(t_philosopher *philo, enum status status)
+void change_status(t_philosopher *philo, t_status status)
 {
     pthread_mutex_lock(&philo->status_lock);
     if (philo->status != DIED)
@@ -41,14 +41,14 @@ void	ft_usleep(long time_to_sleep, t_philosopher *philo)
     }
 }
 
-enum status get_status(t_philosopher *philo)
+t_status get_status(t_philosopher *philo)
 {
-    enum status status;
+    t_status philo_status;
 
     pthread_mutex_lock(&philo->status_lock);
-    status = philo->status;
+    philo_status = philo->status;
     pthread_mutex_unlock(&philo->status_lock);
-    return (status);
+    return (philo_status);
 }
 
 void write_state(char *s, t_philosopher *philo, bool stop)

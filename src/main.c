@@ -6,7 +6,7 @@
 /*   By: mzelouan <mzelouan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 04:21:09 by mzelouan          #+#    #+#             */
-/*   Updated: 2024/11/10 04:35:50 by mzelouan         ###   ########.fr       */
+/*   Updated: 2024/11/10 15:48:17 by mzelouan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ int main (int ac, char **av)
         return (EXIT_FAILURE);
     if (threads_join(philos, monitor))
         return (EXIT_FAILURE);
+    //cleanup(philos, monitor, &param, forks);
     return (EXIT_SUCCESS);
 }
 

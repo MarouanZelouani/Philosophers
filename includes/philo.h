@@ -6,7 +6,7 @@
 /*   By: mzelouan <mzelouan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 04:20:53 by mzelouan          #+#    #+#             */
-/*   Updated: 2024/11/10 04:32:33 by mzelouan         ###   ########.fr       */
+/*   Updated: 2024/11/10 15:47:06 by mzelouan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,16 +22,16 @@
 #include <time.h>
 #include <stdbool.h>
 
-enum status
+typedef enum s_status
 {
     STARTING,
-    TAKINGFORK,
+    TAKENFORK,
     EATING,
     SLEEPING,
     THINKING,
     FULL,
     DIED
-};
+} t_status;
 
 typedef struct s_param
 {
@@ -40,16 +40,11 @@ typedef struct s_param
     size_t time_to_eat;
     size_t time_to_sleep;
     int number_of_meals;
-    int threads_ready;
     long start_time;
-    bool launch;
+    char **messages;
     bool is_dead;
-    bool philos_are_full;
     size_t number_of_full_philos;
-    pthread_mutex_t full_lock;
     pthread_mutex_t is_dead_lock;
-    pthread_mutex_t launch_lock;
-    pthread_mutex_t threads_ready_lock;
     pthread_mutex_t write_lock;
 } t_param;
 
@@ -70,7 +65,7 @@ typedef struct s_philosopher
     bool last_msg;
     int number_of_meals;
     unsigned long long last_meal_time;
-    enum status status;
+    t_status status;
     pthread_mutex_t status_lock;
     pthread_mutex_t lock;
     pthread_mutex_t meals_lock;
@@ -96,7 +91,7 @@ int get_data(int ac, char **av, t_param *param);
 // INIT DATA
 int __init(t_philosopher **philos, t_fork **forks, t_param *param,  t_monitor **monitor);
 
-// THREADS STUFF
+// THREADS TOOLS
 int start_sumulation(t_philosopher *philos, t_monitor *monitor);
 int threads_join(t_philosopher *philos, t_monitor *monitor);
 void    *monitor_routine(void *data);
@@ -105,14 +100,15 @@ void    *routine (void *data);
 
 // UTILS
 long get_time(void);
-void change_status(t_philosopher *philo, enum status status);
+void change_status(t_philosopher *philo, t_status status);
 void	ft_usleep(long time_to_sleep, t_philosopher *philo);
-enum status get_status(t_philosopher *philo);
+t_status get_status(t_philosopher *philo);
 void write_state(char *s, t_philosopher *philo, bool stop);
 
-// DEATH
+// DEATH CHECKS
 bool is_philo_dead(t_philosopher *philo);
 bool is_dead(t_philosopher *philo);
 
-
+// CLEAN 
+void cleanup(t_philosopher *philos, t_monitor *monitor, t_param *param, t_fork *forks);
 #endif

@@ -6,7 +6,7 @@
 /*   By: mzelouan <mzelouan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 04:21:21 by mzelouan          #+#    #+#             */
-/*   Updated: 2024/11/10 04:32:30 by mzelouan         ###   ########.fr       */
+/*   Updated: 2024/11/10 15:43:51 by mzelouan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,4 +52,25 @@ int threads_join(t_philosopher *philos, t_monitor *monitor)
         i++;
     }
     return (EXIT_SUCCESS);
+}
+
+void cleanup(t_philosopher *philos, t_monitor *monitor, t_param *param, t_fork *forks)
+{
+    size_t itr;
+
+    itr = 0;
+    while (itr < param->number_of_philosophers)
+    {
+        pthread_mutex_destroy(&philos[itr].meals_lock);
+        pthread_mutex_destroy(&philos[itr].left_fork->lock);
+        pthread_mutex_destroy(&philos[itr].right_fork->lock);
+        pthread_mutex_destroy(&philos[itr].lock);
+        pthread_mutex_destroy(&philos[itr].status_lock);         
+        itr++;
+    }
+    pthread_mutex_destroy(&param->is_dead_lock);
+    pthread_mutex_destroy(&param->write_lock);
+    free(philos);
+    free(forks);
+    free(monitor);         
 }
