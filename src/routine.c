@@ -6,21 +6,21 @@
 /*   By: mzelouan <mzelouan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 04:21:16 by mzelouan          #+#    #+#             */
-/*   Updated: 2024/11/10 04:37:06 by mzelouan         ###   ########.fr       */
+/*   Updated: 2024/11/10 18:01:01 by mzelouan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
-void    take_forks(t_philosopher *philo);
-int     examine_death(t_philosopher *philo);
-int     eat_routine(t_philosopher *philo);
+void    take_forks(t_philo *philo);
+int     examine_death(t_philo *philo);
+int     eat_routine(t_philo *philo);
 
 void *routine (void *data)
 {
-    t_philosopher *philo;
+    t_philo *philo;
     
-    philo = (t_philosopher *)data;
+    philo = (t_philo *)data;
     while (is_dead(philo) == false)
     {    
         if (examine_death(philo)) // DEATH CHECK
@@ -31,7 +31,7 @@ void *routine (void *data)
             break;
         write_state("is sleeping", philo, false);
         change_status(philo, SLEEPING);
-        ft_usleep(philo->param->time_to_sleep, philo);
+        gosleep(philo->args->time_to_sleep, philo);
         change_status(philo, THINKING);
         if (examine_death(philo)) // DEATH CHECK
             break;
@@ -40,8 +40,8 @@ void *routine (void *data)
         if (examine_death(philo)) // DEATH CHECK
             break;
         pthread_mutex_lock(&philo->meals_lock);
-        if (philo->number_of_meals >= philo->param->number_of_meals 
-        && philo->param->number_of_meals != -1)
+        if (philo->number_of_meals >= philo->args->number_of_meals 
+        && philo->args->number_of_meals != -1)
         {
             change_status(philo, FULL);
             pthread_mutex_unlock(&philo->meals_lock);
@@ -53,7 +53,7 @@ void *routine (void *data)
 }
 
 
-int examine_death(t_philosopher *philo)
+int examine_death(t_philo *philo)
 {
     if (is_dead(philo))
         return(1);
@@ -62,15 +62,15 @@ int examine_death(t_philosopher *philo)
         change_status(philo, DIED);
         write_state("died", philo, true);
         philo->last_msg = true;
-        pthread_mutex_lock(&philo->param->is_dead_lock);
-        philo->param->is_dead = true;
-        pthread_mutex_unlock(&philo->param->is_dead_lock);
+        pthread_mutex_lock(&philo->args->is_dead_lock);
+        philo->args->is_dead = true;
+        pthread_mutex_unlock(&philo->args->is_dead_lock);
         return(1);
     };
     return(0);
 }
 
-void take_forks(t_philosopher *philo)
+void take_forks(t_philo *philo)
 {
     if (philo->id % 2 == 0 && is_philo_dead(philo) == false)
     {
@@ -90,7 +90,7 @@ void take_forks(t_philosopher *philo)
     }
 }
 
-int eat_routine(t_philosopher *philo)
+int eat_routine(t_philo *philo)
 {
     take_forks(philo);
     pthread_mutex_lock(&philo->lock);
@@ -104,7 +104,7 @@ int eat_routine(t_philosopher *philo)
     }
     change_status(philo, EATING); // change the status
     write_state("is eating", philo, false);
-    ft_usleep(philo->param->time_to_eat, philo);
+    gosleep(philo->args->time_to_eat, philo);
     if (examine_death(philo)) // DEATH CHECK
     {
         pthread_mutex_unlock(&(philo->left_fork->lock));

@@ -6,7 +6,7 @@
 /*   By: mzelouan <mzelouan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 04:21:13 by mzelouan          #+#    #+#             */
-/*   Updated: 2024/11/10 04:21:14 by mzelouan         ###   ########.fr       */
+/*   Updated: 2024/11/10 17:39:29 by mzelouan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,18 +50,18 @@ int check_arguments(int ac, char **av)
 }
 
 
-static int check_numbers(t_param *param)
+static int check_numbers(t_args *args)
 {
-    if (param == NULL)
+    if (args == NULL)
         return (EXIT_FAILURE);
-    if (param->number_of_philosophers <= 0)
+    if (args->number_of_philosophers <= 0)
         return (EXIT_FAILURE);
-    if (param->number_of_meals == 0 || param->number_of_meals < -1)
+    if (args->number_of_meals == 0 || args->number_of_meals < -1)
         return (EXIT_FAILURE);
     return (EXIT_SUCCESS);
 }
 
-int get_data(int ac, char **av, t_param *param)
+int get_data(int ac, char **av, t_args *args)
 {
     int error;
 
@@ -70,14 +70,14 @@ int get_data(int ac, char **av, t_param *param)
     error = check_arguments(ac, av);
     if (error != 0)
         _error(error, av);
-    param->number_of_philosophers = ft_atoi(av[1]);
-    param->time_to_die = ft_atoi(av[2]);
-    param->time_to_eat = ft_atoi(av[3]);
-    param->time_to_sleep = ft_atoi(av[4]);
-    param->number_of_meals = -1;
+    args->number_of_philosophers = ft_atoi(av[1]);
+    args->time_to_die = ft_atoi(av[2]);
+    args->time_to_eat = ft_atoi(av[3]);
+    args->time_to_sleep = ft_atoi(av[4]);
+    args->number_of_meals = -1;
     if (ac == 6)
-        param->number_of_meals = ft_atoi(av[5]);
-    if (check_numbers(param))
+        args->number_of_meals = ft_atoi(av[5]);
+    if (check_numbers(args))
         return (EXIT_FAILURE);
     return(EXIT_SUCCESS);
 }

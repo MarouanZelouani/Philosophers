@@ -6,47 +6,45 @@
 /*   By: mzelouan <mzelouan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 04:20:59 by mzelouan          #+#    #+#             */
-/*   Updated: 2024/11/10 04:36:54 by mzelouan         ###   ########.fr       */
+/*   Updated: 2024/11/10 18:00:10 by mzelouan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
-bool is_dead(t_philosopher *philo)
+bool is_dead(t_philo *philo)
 {
     bool is_dead;
 
     is_dead = false;
-    pthread_mutex_lock(&philo->param->is_dead_lock);
-    if (philo->param->is_dead == true)
+    pthread_mutex_lock(&philo->args->is_dead_lock);
+    if (philo->args->is_dead == true)
         is_dead = true;
-    pthread_mutex_unlock(&philo->param->is_dead_lock);
+    pthread_mutex_unlock(&philo->args->is_dead_lock);
     return (is_dead);
 }
 
 // CHECK IF THE PHILOSOPHER IS DEAD
-bool is_philo_dead(t_philosopher *philo)
+bool is_philo_dead(t_philo *philo)
 {
     bool is_dead;
 
     is_dead = false;
     pthread_mutex_lock(&philo->lock);
-    if (get_time() - philo->last_meal_time > philo->param->time_to_die)
+    if (get_time() - philo->last_meal_time > philo->args->time_to_die)
         is_dead = true;
     pthread_mutex_unlock(&philo->lock);
     return (is_dead);
 }
 
-int check_philos_condition(t_philosopher *philos)
+int check_philos_condition(t_philo *philos)
 {
     size_t itr;
-    t_param *tmp_param;
     size_t finished;
 
     itr = 0;
     finished = 0;
-    tmp_param = philos[0].param;
-    while (itr < tmp_param->number_of_philosophers)
+    while (itr < philos->args->number_of_philosophers)
     {
         if (get_status(&philos[itr]) == FULL)
           finished++;
@@ -55,14 +53,14 @@ int check_philos_condition(t_philosopher *philos)
             change_status(&philos[itr], DIED);
             write_state("died", &philos[itr], true);
             philos[itr].last_msg = true;
-            pthread_mutex_lock(&tmp_param->is_dead_lock);
-            tmp_param->is_dead = true;
-            pthread_mutex_unlock(&tmp_param->is_dead_lock);
+            pthread_mutex_lock(&philos->args->is_dead_lock);
+            philos->args->is_dead = true;
+            pthread_mutex_unlock(&philos->args->is_dead_lock);
             return(1);
         }
         itr++;
     }
-    if (finished == philos->param->number_of_philosophers)
+    if (finished == philos->args->number_of_philosophers)
       return (1);
     return (0);
 }
@@ -77,7 +75,7 @@ void  *monitor_routine(void *data)
     {
         if (check_philos_condition(s->philos))
             break;
-        usleep(50);
+        usleep(1);
     }
     return (NULL);
 }
