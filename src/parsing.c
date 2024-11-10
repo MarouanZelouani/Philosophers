@@ -41,19 +41,18 @@ int check_arguments(int ac, char **av)
 static int check_numbers(t_param *param)
 {
     if (param == NULL)
-        return EXIT_FAILURE;
-    if (param->number_of_philosophers <= 0 || param->time_to_die <= 0 
-        || param->time_to_eat <= 0 || param->time_to_sleep <= 0)
-        return EXIT_FAILURE;
-    if (param->number_of_meals < -1)
-        return EXIT_FAILURE;
-    return EXIT_SUCCESS;
+        return (EXIT_FAILURE);
+    if (param->number_of_philosophers <= 0)
+        return (EXIT_FAILURE);
+    if (param->number_of_meals == 0 || param->number_of_meals < -1)
+        return (EXIT_FAILURE);
+    return (EXIT_SUCCESS);
 }
 
 int get_data(int ac, char **av, t_param *param)
 {
     int error;
-    
+
     if (ac != 5 && ac != 6)
         _error(0, av);
     error = check_arguments(ac, av);
@@ -67,6 +66,6 @@ int get_data(int ac, char **av, t_param *param)
     if (ac == 6)
         param->number_of_meals = ft_atoi(av[5]);
     if (check_numbers(param))
-        return EXIT_FAILURE;
-    return(EXIT_SUCCESS);   
+        return (EXIT_FAILURE);
+    return(EXIT_SUCCESS);
 }
