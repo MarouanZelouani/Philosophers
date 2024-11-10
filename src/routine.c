@@ -55,7 +55,7 @@ int eat_routine(t_philosopher *philo)
     }
     change_status(philo, EATING); // change the status
     write_state("is eating", philo, false);
-    ft_usleep(philo->param->time_to_eat);
+    ft_usleep(philo->param->time_to_eat, philo);
     if (yeah_check_for_death(philo)) // DEATH CHECK
     {
         pthread_mutex_unlock(&(philo->left_fork->lock));
@@ -86,7 +86,7 @@ void *routine (void *data)
         //  SLEEPING
         write_state("is sleeping", philo, false);
         change_status(philo, SLEEPING);
-        ft_usleep(philo->param->time_to_sleep);
+        ft_usleep(philo->param->time_to_sleep, philo);
         // THINKING
         change_status(philo, THINKING);
         if (yeah_check_for_death(philo)) // DEATH CHECK

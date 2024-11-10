@@ -1,32 +1,12 @@
 #include "../includes/philo.h"
 
-int param_init(t_param *param);
-int forks_init(t_fork **forks, t_param *param);
-int philosophers_init(t_philosopher **philos, t_fork *forks, t_param *param);
-
-int __init(t_philosopher **philos, t_fork **forks, t_param *param, t_monitor **monitor)
-{
-  if (param_init(param))
-    return (EXIT_FAILURE);
-  if (forks_init(forks, param))
-    return (EXIT_FAILURE);
-  if (philosophers_init(philos, *forks, param))
-    return (EXIT_FAILURE);
-  *monitor = malloc(sizeof(t_monitor));
-  if (*monitor == NULL)
-    return (EXIT_FAILURE);
-  (*monitor)->param = param;
-  (*monitor)->philos = *philos;
-  return (EXIT_SUCCESS);
-}
-
 // INIT DATA
 int param_init(t_param *param)
 {
     param->threads_ready = 0;
     param->launch = false;
     param->is_dead = false;
-    param->start_time = get_time(); // START
+    param->start_time = get_time(); // START 
     // ALLWAYS INIT YOUR MUTEXS!!
     if (pthread_mutex_init(&param->write_lock, NULL) == -1)
         return (EXIT_FAILURE);
@@ -43,8 +23,10 @@ int param_init(t_param *param)
 int forks_init(t_fork **forks, t_param *param)
 {
     size_t i;
+    int error;
 
     i = 0;
+    error = 0;
     *forks = malloc (sizeof(t_fork) * param->number_of_philosophers);
     if (*forks == NULL)
         return (EXIT_FAILURE);
@@ -58,6 +40,7 @@ int forks_init(t_fork **forks, t_param *param)
     }
     return (EXIT_SUCCESS);
 }
+
 
 // INIT PHILOSOPHERS
 int philosophers_init(t_philosopher **philos, t_fork *forks, t_param *param)
@@ -86,6 +69,20 @@ int philosophers_init(t_philosopher **philos, t_fork *forks, t_param *param)
         if (pthread_mutex_init(&((*philos)[i].meals_lock), NULL) == -1)
             return (EXIT_FAILURE);
         i++;
-    }
+    }    
+    return (EXIT_SUCCESS);
+}
+
+int data_init(t_param *param, t_philosopher **philos, t_fork **forks, t_supervisor *supervisor)
+{   
+    // INIT DATA
+    if (param_init(param))
+        return (EXIT_FAILURE);
+    else if (philosophers_init(philos, *forks, param))
+        return (EXIT_FAILURE);
+    else if (forks_init(forks, param))
+        return (EXIT_FAILURE);
+    supervisor->param = param;
+    supervisor->philos = *philos;
     return (EXIT_SUCCESS);
 }

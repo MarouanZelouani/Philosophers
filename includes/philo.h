@@ -10,7 +10,7 @@
 #include <time.h>
 #include <stdbool.h>
 
-enum status
+enum status 
 {
     STARTING,
     TAKINGFORK,
@@ -65,12 +65,12 @@ typedef struct s_philosopher
     t_param *param;
 } t_philosopher;
 
-typedef struct s_monitor
+typedef struct s_supervisor
 {
     pthread_t thread;
     t_param *param;
     t_philosopher *philos;
-} t_monitor;
+} t_supervisor;
 
 
 // LIBFT UTILS
@@ -82,11 +82,15 @@ int ft_strcmp(char *s1, char *s2);
 int get_data(int ac, char **av, t_param *param);
 
 // INIT DATA
-int __init(t_philosopher **philos, t_fork **forks, t_param *param,  t_monitor **monitor);
+// int data_init(t_param *param, t_philosopher **philos, 
+//     t_fork **forks, t_supervisor *supervisor);
+int param_init(t_param *param);
+int forks_init(t_fork **forks, t_param *param);
+int philosophers_init(t_philosopher **philos, t_fork *forks, t_param *param);
 
 // THREADS STUFF
-int start_sumulation(t_philosopher *philos, t_monitor *monitor);
-int threads_join(t_philosopher *philos, t_monitor *monitor);
+int start_sumulation(t_philosopher *philos, t_supervisor *supervisor);
+int threads_join(t_philosopher *philos, t_supervisor *supervisor);
 void    *check_for_death(void *data);
 int handle_one_philo(t_philosopher *philo);
 void    *routine (void *data);
@@ -94,12 +98,13 @@ void    *routine (void *data);
 // UTILS
 long get_time(void);
 void change_status(t_philosopher *philo, enum status status);
-void	ft_usleep(long time_to_sleep);
+void	ft_usleep(long time_to_sleep, t_philosopher *philo);
 enum status get_status(t_philosopher *philo);
 void write_state(char *s, t_philosopher *philo, bool stop);
 
 // DEATH
 void  *check_for_death(void *data);
+bool dinner_end(t_philosopher *philos);
 bool is_philo_dead(t_philosopher *philo);
 bool is_dead(t_philosopher *philo);
 

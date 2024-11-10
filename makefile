@@ -12,21 +12,21 @@ CFILES =	./src/death.c\
 OFILES = $(CFILES:.c=.o)
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror #-fsanitize=thread
+CFLAGS = #-Wall -Wextra -Werror #-fsanitize=thread
 AR = ac rc
-RM = rm -rf
+RM = rm -rf	
 
 $(NAME) :	$(OFILES)
-			$(CC) $(CFLAGS) $(OFILES) -o $(NAME)
+			$(CC) $(CFLAGS) $(OFILES) -o $(NAME) 			
 
 all :	$(NAME)
 
 re : fclean $(NAME)
 
-clean :
+clean : 
 		$(RM) $(OFILES)
 
-fclean : clean
+fclean : clean 
 		$(RM) $(NAME)
 
 .PHONY : all re clean fclean
