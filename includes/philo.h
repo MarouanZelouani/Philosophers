@@ -6,7 +6,7 @@
 /*   By: mzelouan <mzelouan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 04:20:53 by mzelouan          #+#    #+#             */
-/*   Updated: 2024/11/10 17:55:24 by mzelouan         ###   ########.fr       */
+/*   Updated: 2024/11/11 22:09:32 by mzelouan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ typedef struct s_args
     size_t time_to_sleep;
     int number_of_meals;
     long start_time;
-    char **messages;
     bool is_dead;
     pthread_mutex_t is_dead_lock;
     pthread_mutex_t write_lock;
@@ -60,7 +59,6 @@ typedef struct s_philo
     pthread_t thread;
     t_fork *left_fork;
     t_fork *right_fork;
-    bool last_msg;
     t_args *args;
     int number_of_meals;
     unsigned long long last_meal_time;

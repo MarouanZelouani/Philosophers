@@ -32,4 +32,3 @@ fclean : clean
 .PHONY : all re clean fclean
 
 .SECONDARY: $(OFILES)
-# .SILENT: fclean clean
