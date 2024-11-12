@@ -6,7 +6,7 @@
 /*   By: mzelouan <mzelouan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 04:20:59 by mzelouan          #+#    #+#             */
-/*   Updated: 2024/11/10 18:00:10 by mzelouan         ###   ########.fr       */
+/*   Updated: 2024/11/12 00:50:01 by mzelouan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ bool is_dead(t_philo *philo)
     return (is_dead);
 }
 
-// CHECK IF THE PHILOSOPHER IS DEAD
 bool is_philo_dead(t_philo *philo)
 {
     bool is_dead;
@@ -52,7 +51,6 @@ int check_philos_condition(t_philo *philos)
         {
             change_status(&philos[itr], DIED);
             write_state("died", &philos[itr], true);
-            philos[itr].last_msg = true;
             pthread_mutex_lock(&philos->args->is_dead_lock);
             philos->args->is_dead = true;
             pthread_mutex_unlock(&philos->args->is_dead_lock);
@@ -65,17 +63,21 @@ int check_philos_condition(t_philo *philos)
     return (0);
 }
 
-// CHECK IF A PHILOSOPHER DIED
 void  *monitor_routine(void *data)
 {
     t_monitor *s;
 
     s = (t_monitor *)data;
+    if (s->args->number_of_philosophers == 1)
+    {
+        handle_one_philo(s->philos);
+        return (NULL);        
+    }
     while (true)
     {
         if (check_philos_condition(s->philos))
             break;
-        usleep(1);
+        usleep(10);
     }
     return (NULL);
 }

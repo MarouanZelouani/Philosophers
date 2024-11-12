@@ -6,7 +6,7 @@
 /*   By: mzelouan <mzelouan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 04:21:03 by mzelouan          #+#    #+#             */
-/*   Updated: 2024/11/10 18:00:33 by mzelouan         ###   ########.fr       */
+/*   Updated: 2024/11/12 00:49:03 by mzelouan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,10 @@ int __init(t_philo **philos, t_fork **forks, t_args *args, t_monitor **monitor)
   return (EXIT_SUCCESS);
 }
 
-// INIT DATA
 int args_init(t_args *args)
 {
     args->is_dead = false;
-    args->start_time = get_time(); // START
-    // ALLWAYS INIT YOUR MUTEXS!!
+    args->start_time = get_time();
     if (pthread_mutex_init(&args->write_lock, NULL))
         return (EXIT_FAILURE);
     if (pthread_mutex_init(&args->is_dead_lock, NULL))
@@ -45,7 +43,6 @@ int args_init(t_args *args)
     return (EXIT_SUCCESS);
 }
 
-// INIT FORKS
 int forks_init(t_fork **forks, t_args *args)
 {
     size_t i;
@@ -65,7 +62,6 @@ int forks_init(t_fork **forks, t_args *args)
     return (EXIT_SUCCESS);
 }
 
-// INIT PHILOSOPHERS
 int philosophers_init(t_philo **philos, t_fork *forks, t_args *args)
 {
     size_t i;
@@ -78,7 +74,6 @@ int philosophers_init(t_philo **philos, t_fork *forks, t_args *args)
     {
         (*philos)[i].id = i + 1;
         (*philos)[i].number_of_meals = 0;
-        (*philos)[i].last_msg = false;
         (*philos)[i].last_meal_time = args->start_time;
         (*philos)[i].right_fork = &forks[i];
         (*philos)[i].left_fork = &forks[(i + 1) % args->number_of_philosophers];

@@ -6,7 +6,7 @@
 /*   By: mzelouan <mzelouan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 04:21:24 by mzelouan          #+#    #+#             */
-/*   Updated: 2024/11/10 18:01:09 by mzelouan         ###   ########.fr       */
+/*   Updated: 2024/11/11 22:09:43 by mzelouan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void write_state(char *s, t_philo *philo, bool stop)
     static bool last_message = false;
 
     pthread_mutex_lock(&philo->args->write_lock);
-    if (last_message == false && philo->last_msg == false && is_dead(philo) == false)
+    if (last_message == false && is_dead(philo) == false)
         printf("%lu %d %s\n", get_time() - philo->args->start_time, philo->id, s);
     if (stop == true)
         last_message = true;

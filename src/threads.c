@@ -6,7 +6,7 @@
 /*   By: mzelouan <mzelouan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 04:21:21 by mzelouan          #+#    #+#             */
-/*   Updated: 2024/11/10 18:01:05 by mzelouan         ###   ########.fr       */
+/*   Updated: 2024/11/12 00:51:10 by mzelouan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,19 +17,24 @@ int start_sumulation(t_philo *philos, t_monitor *monitor)
     size_t i;
 
     i = 0;
-    if (pthread_create(&monitor->thread, NULL, &monitor_routine, monitor))
-        return (EXIT_FAILURE);
     while (i < philos->args->number_of_philosophers)
     {
+        if (philos->args->number_of_philosophers == 1)
+            break;
         if (pthread_create(&(philos[i].thread), NULL, &routine, &philos[i]))
             return (EXIT_FAILURE);
         i++;
     }
+    if (pthread_create(&monitor->thread, NULL, &monitor_routine, monitor))
+        return (EXIT_FAILURE);
+    if (threads_join(philos, monitor))
+        return (EXIT_FAILURE);
     return (EXIT_SUCCESS);
 }
 
 int handle_one_philo(t_philo *philo)
 {
+    
     pthread_mutex_lock(&philo->right_fork->lock);
     write_state("has taken a fork", philo, false);
     pthread_mutex_unlock(&philo->right_fork->lock);
@@ -54,7 +59,6 @@ int threads_join(t_philo *philos, t_monitor *monitor)
     return (EXIT_SUCCESS);
 }
 
-// DESTROY MUTEXES
 void cleanup(t_philo *philos, t_monitor *monitor, t_args *args, t_fork *forks)
 {
     size_t itr;
