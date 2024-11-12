@@ -6,78 +6,102 @@
 /*   By: mzelouan <mzelouan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 04:21:13 by mzelouan          #+#    #+#             */
-/*   Updated: 2024/11/10 17:39:29 by mzelouan         ###   ########.fr       */
+/*   Updated: 2024/11/12 03:06:24 by mzelouan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
-void _error(int code, char **av)
+void		_error(int code, char **av);
+int			check_arguments(char **av);
+static int	check_numbers(t_args *args);
+size_t		parse_arg(char *arg);
+
+int	get_data(int ac, char **av, t_args *args)
 {
-    if (code == 0)
-    {
-        printf("Usage : ./philo <arguments..>\n");
-        printf("\t [1] - number_of_philosophers\n");
-        printf("\t [2] - time_to_die\n");
-        printf("\t [3] - time_to_eat\n");
-        printf("\t [4] - time_to_sleep\n");
-        printf("\t [optional] : number_of_times_each_philosopher_must_eat\n");
-    }
-    else if (code > 0)
-        printf("%s => is not a valid argument!!\n", av[code]);
-    exit(EXIT_FAILURE);
+	int	error;
+
+	if (ac != 5 && ac != 6)
+		_error(0, av);
+	error = check_arguments(av);
+	if (error != 0)
+		_error(error, av);
+	args->number_of_philosophers = parse_arg(av[1]);
+	args->time_to_die = parse_arg(av[2]);
+	args->time_to_eat = parse_arg(av[3]);
+	args->time_to_sleep = parse_arg(av[4]);
+	args->number_of_meals = -1;
+	if (ac == 6)
+		args->number_of_meals = ft_atoi(av[5]);
+	if (check_numbers(args))
+		return (EXIT_FAILURE);
+	return (EXIT_SUCCESS);
 }
 
-int check_arguments(int ac, char **av)
+size_t	parse_arg(char *arg)
 {
-    size_t i;
-    size_t j;
+	size_t	result;
+	char	*tmp_res;
 
-    (void)ac;
-    i = 1;
-    while (av[i])
-    {
-        j = 0;
-        while (av[i][j])
-        {
-            if (!ft_isdigit(av[i][j]))
-                return(i);
-            j++;
-        }
-        i++;
-    }
-    return (0);
+	result = ft_atoi(arg);
+	tmp_res = ft_itoa(result);
+	if (arg && arg[0] && arg[0] == '+')
+		arg++;
+	if (ft_strcmp(tmp_res, arg))
+	{
+		printf("Error: The provided number '%s' is out of range!\n", arg);
+		free(tmp_res);
+		exit(EXIT_FAILURE);
+	}
+	free(tmp_res);
+	return (result);
 }
 
-
-static int check_numbers(t_args *args)
+void	_error(int code, char **av)
 {
-    if (args == NULL)
-        return (EXIT_FAILURE);
-    if (args->number_of_philosophers <= 0)
-        return (EXIT_FAILURE);
-    if (args->number_of_meals == 0 || args->number_of_meals < -1)
-        return (EXIT_FAILURE);
-    return (EXIT_SUCCESS);
+	if (code == 0)
+	{
+		printf("Usage : ./philo [1] [2] [3] [4] [optional]\n");
+		printf("\t [1] - number of philosophers\n");
+		printf("\t [2] - time to die\n");
+		printf("\t [3] - time to eat\n");
+		printf("\t [4] - time to sleep\n");
+		printf("\t [optional] : number of times each philosopher must_eat\n");
+	}
+	else if (code > 0)
+		printf("Error: '%s' is not a valid argument!!\n", av[code]);
+	exit(EXIT_FAILURE);
 }
 
-int get_data(int ac, char **av, t_args *args)
+int	check_arguments(char **av)
 {
-    int error;
+	size_t	i;
+	size_t	j;
 
-    if (ac != 5 && ac != 6)
-        _error(0, av);
-    error = check_arguments(ac, av);
-    if (error != 0)
-        _error(error, av);
-    args->number_of_philosophers = ft_atoi(av[1]);
-    args->time_to_die = ft_atoi(av[2]);
-    args->time_to_eat = ft_atoi(av[3]);
-    args->time_to_sleep = ft_atoi(av[4]);
-    args->number_of_meals = -1;
-    if (ac == 6)
-        args->number_of_meals = ft_atoi(av[5]);
-    if (check_numbers(args))
-        return (EXIT_FAILURE);
-    return(EXIT_SUCCESS);
+	i = 1;
+	while (av[i])
+	{
+		j = 0;
+		if (av[i][j] && av[i][j] == '+' && av[i][j + 1])
+			j++;
+		while (av[i][j])
+		{
+			if (!ft_isdigit(av[i][j]))
+				return (i);
+			j++;
+		}
+		i++;
+	}
+	return (0);
+}
+
+static int	check_numbers(t_args *args)
+{
+	if (args == NULL)
+		return (EXIT_FAILURE);
+	if (args->number_of_philosophers <= 0)
+		return (EXIT_FAILURE);
+	if (args->number_of_meals == 0 || args->number_of_meals < -1)
+		return (EXIT_FAILURE);
+	return (EXIT_SUCCESS);
 }
